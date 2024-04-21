@@ -5,23 +5,23 @@
 #include "json.hpp"
 #include <random>
 
-static const uint32_t NUM_ROWS = 15;
+static constexpr uint32_t NUM_ROWS = 15;
 
 // Constants
-const uint32_t PLANT_MAXIMUM_AGE = 10;
-const uint32_t HERBIVORE_MAXIMUM_AGE = 50;
-const uint32_t CARNIVORE_MAXIMUM_AGE = 80;
-const uint32_t MAXIMUM_ENERGY = 200;
-const uint32_t THRESHOLD_ENERGY_FOR_REPRODUCTION = 20;
+constexpr uint32_t PLANT_MAXIMUM_AGE = 10;
+constexpr uint32_t HERBIVORE_MAXIMUM_AGE = 50;
+constexpr uint32_t CARNIVORE_MAXIMUM_AGE = 80;
+constexpr uint32_t MAXIMUM_ENERGY = 200;
+constexpr uint32_t THRESHOLD_ENERGY_FOR_REPRODUCTION = 20;
 
 // Probabilities
-const double PLANT_REPRODUCTION_PROBABILITY = 0.2;
-const double HERBIVORE_REPRODUCTION_PROBABILITY = 0.075;
-const double CARNIVORE_REPRODUCTION_PROBABILITY = 0.025;
-const double HERBIVORE_MOVE_PROBABILITY = 0.7;
-const double HERBIVORE_EAT_PROBABILITY = 0.9;
-const double CARNIVORE_MOVE_PROBABILITY = 0.5;
-const double CARNIVORE_EAT_PROBABILITY = 1.0;
+constexpr double PLANT_REPRODUCTION_PROBABILITY = 0.2;
+constexpr double HERBIVORE_REPRODUCTION_PROBABILITY = 0.075;
+constexpr double CARNIVORE_REPRODUCTION_PROBABILITY = 0.025;
+constexpr double HERBIVORE_MOVE_PROBABILITY = 0.7;
+constexpr double HERBIVORE_EAT_PROBABILITY = 0.9;
+constexpr double CARNIVORE_MOVE_PROBABILITY = 0.5;
+constexpr double CARNIVORE_EAT_PROBABILITY = 1.0;
 
 // Type definitions
 enum entity_type_t
@@ -74,7 +74,7 @@ int main()
     ([](crow::request &, crow::response &res)
      {
         // Return the HTML content here
-        res.set_static_file_info_unsafe("../public/index.html");
+        res.set_static_file_info_unsafe("./public/index.html");
         res.end(); });
 
     CROW_ROUTE(app, "/start-simulation")
@@ -116,7 +116,7 @@ int main()
         // Return the JSON representation of the entity grid
         nlohmann::json json_grid = entity_grid; 
         return json_grid.dump(); });
-    app.port(8080).run();
+    app.bindaddr("127.0.0.1").port(8080).run();
 
     return 0;
 }

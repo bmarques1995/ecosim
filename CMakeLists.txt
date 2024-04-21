@@ -15,6 +15,14 @@ include_directories(${Boost_INCLUDE_DIRS} src)
 # target executable and its source files
 add_executable(ecosim src/main.cpp)
 
+add_custom_target(copy_resources ALL
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_CURRENT_SOURCE_DIR}/public
+        ${CMAKE_CURRENT_BINARY_DIR}/public
+        COMMENT "Copying resources into binary directory")
+
+add_dependencies(ecosim copy_resources)
+
 # link Boost libraries to the target executable
 target_link_libraries(ecosim ${Boost_LIBRARIES})
 target_link_libraries(ecosim  Threads::Threads)                                                                                                 
