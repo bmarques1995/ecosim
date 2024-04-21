@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.10)
 project(data-aquisition-system)
 
+file(GLOB_RECURSE ECO_SRCS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "src/*.cpp")
+
 # set C++ standard
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -13,7 +15,7 @@ find_package(Boost 1.65.1 REQUIRED COMPONENTS system)
 include_directories(${Boost_INCLUDE_DIRS} src)
 
 # target executable and its source files
-add_executable(ecosim src/main.cpp)
+add_executable(ecosim ${ECO_SRCS})
 
 add_custom_target(copy_resources ALL
         COMMAND ${CMAKE_COMMAND} -E copy_directory
