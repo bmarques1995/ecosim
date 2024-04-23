@@ -27,6 +27,34 @@ const std::vector<std::vector<BoardSerializer>>& Board::Serialize()
     return m_SerializedEntities;
 }
 
+void Board::PrintSerializer()
+{
+    std::cout << "\n\n";
+    for(size_t i = 0; i < m_Stride; ++i)
+    {
+        for(size_t j = 0; j < m_Stride; ++j)
+            switch(m_SerializedEntities[i][j].type)
+            {
+            case entity_type_t::empty:
+                std::cout << "* ";
+                break;
+            case entity_type_t::plant:
+                std::cout << "p ";
+                break;
+            case entity_type_t::herbivore:
+                std::cout << "h ";
+                break;
+            case entity_type_t::carnivore:
+                std::cout << "c ";
+                break;
+            default:
+                break;
+            }
+        std::cout << "\n";
+    }
+    std::cout << "\n\n";
+}
+
 Board::~Board()
 {
     delete[] m_Samples;
@@ -97,16 +125,60 @@ void Board::Advance()
     for (auto r : m_PlantsMap)
     {
         r.second->AdvanceAge();
+        if(r.second->TooOld())
+        {
+            BoardSerializer b = {entity_type_t::empty, 0, 0};
+            pos_t current_pos = r.second->GetCurrentPos();
+            m_Samples[current_pos.i * m_Stride + current_pos.j] = 0;
+            m_SerializedEntities[current_pos.i][current_pos.j] = b;
+            m_PlantsToErase.push(r.first);
+        }
+
         m_SerializedEntities[r.second->GetCurrentPos().i][r.second->GetCurrentPos().j] = r.second->Serialize();
     }
+    while(m_PlantsToErase.size() > 0)
+    {
+        uint32_t id = m_PlantsToErase.front();
+        m_PlantsToErase.pop();
+        m_PlantsMap.erase(id);
+    }
+        
     for (auto r : m_HerbivoresMap)
     {
         r.second->AdvanceAge();
+        if(r.second->TooOld())
+        {
+            BoardSerializer b = {entity_type_t::empty, 0, 0};
+            pos_t current_pos = r.second->GetCurrentPos();
+            m_Samples[current_pos.i * m_Stride + current_pos.j] = 0;
+            m_SerializedEntities[current_pos.i][current_pos.j] = b;
+            m_HerbivoresToErase.push(r.first);
+        }
         m_SerializedEntities[r.second->GetCurrentPos().i][r.second->GetCurrentPos().j] = r.second->Serialize();
+    }
+    while(m_HerbivoresToErase.size() > 0)
+    {
+        uint32_t id = m_PlantsToErase.front();
+        m_PlantsToErase.pop();
+        m_PlantsMap.erase(id);
     }
     for (auto r : m_CarnivoresMap)
     {
         r.second->AdvanceAge();
+        if(r.second->TooOld())
+        {
+            BoardSerializer b = {entity_type_t::empty, 0, 0};
+            pos_t current_pos = r.second->GetCurrentPos();
+            m_Samples[current_pos.i * m_Stride + current_pos.j] = 0;
+            m_SerializedEntities[current_pos.i][current_pos.j] = b;
+            m_CarnivoresToErase.push(r.first);
+        }
         m_SerializedEntities[r.second->GetCurrentPos().i][r.second->GetCurrentPos().j] = r.second->Serialize();
+    }
+    while(m_CarnivoresToErase.size() > 0)
+    {
+        uint32_t id = m_PlantsToErase.front();
+        m_PlantsToErase.pop();
+        m_PlantsMap.erase(id);
     }
 }

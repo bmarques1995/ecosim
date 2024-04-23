@@ -6,6 +6,7 @@
 #include "Herbivore.hpp"
 #include <vector>
 #include <unordered_map>
+#include <queue>
 #include <memory>
 
 class Board
@@ -18,6 +19,8 @@ public:
 
     void Advance();
 
+    void PrintSerializer();
+
 private:
     uint16_t SelectRandomPos();
 
@@ -26,6 +29,8 @@ private:
     void CreateCarnivore();
     void AdvanceID();
 
+    
+
     uint32_t m_Stride;
     uint32_t m_CurrentCycle;
     uint32_t* m_Samples;
@@ -33,6 +38,9 @@ private:
     std::vector<std::vector<BoardSerializer>> m_SerializedEntities;
 
     std::unordered_map<uint32_t, std::shared_ptr<Plant>> m_PlantsMap;
+    std::queue<uint32_t> m_PlantsToErase;
     std::unordered_map<uint32_t, std::shared_ptr<Herbivore>> m_HerbivoresMap;
+    std::queue<uint32_t> m_HerbivoresToErase;
     std::unordered_map<uint32_t, std::shared_ptr<Carnivore>> m_CarnivoresMap;
+    std::queue<uint32_t> m_CarnivoresToErase;
 };
